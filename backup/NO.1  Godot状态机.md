@@ -1,4 +1,3 @@
-# Godot状态机
 ## 一、 StaseMachine
 ```
 extends Node
