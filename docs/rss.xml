@@ -1,2 +1,132 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>ashortwhile的博客</title><link>https://ashortwhile.github.io</link><description>我是ashortwhile....</description><copyright>ashortwhile的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/178870129?v=4</url><title>avatar</title><link>https://ashortwhile.github.io</link></image><lastBuildDate>Mon, 25 Aug 2025 10:18:19 +0000</lastBuildDate><managingEditor>ashortwhile的博客</managingEditor><ttl>60</ttl><webMaster>ashortwhile的博客</webMaster><item><title>第一次写博客</title><link>https://ashortwhile.github.io/post/di-yi-ci-xie-bo-ke.html</link><description>第一次写博客，希望能坚持下去！！！。</description><guid isPermaLink="true">https://ashortwhile.github.io/post/di-yi-ci-xie-bo-ke.html</guid><pubDate>Mon, 25 Aug 2025 10:13:51 +0000</pubDate></item></channel></rss>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>ashortwhile的博客</title><link>https://ashortwhile.github.io</link><description>我是ashortwhile....</description><copyright>ashortwhile的博客</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/178870129?v=4</url><title>avatar</title><link>https://ashortwhile.github.io</link></image><lastBuildDate>Mon, 25 Aug 2025 11:40:03 +0000</lastBuildDate><managingEditor>ashortwhile的博客</managingEditor><ttl>60</ttl><webMaster>ashortwhile的博客</webMaster><item><title>NO.1  Godot状态机</title><link>https://ashortwhile.github.io/post/NO.1%20%20Godot-zhuang-tai-ji.html</link><description># Godot状态机
+## 一、 StaseMachine
+```
+extends Node
+class_name StateMachine
+
+@export var initial_state : NodePath
+@export var auto_start = true
+
+var current_state : StateBase = null
+
+@onready var states = get_children()
+func _ready() -&gt; void:
+	if auto_start:
+		launch()
+
+
+func launch():
+		assert(initial_state != null,'错误')
+		current_state = get_node(initial_state)
+		current_state.enter()
+
+
+func _physics_process(delta: float) -&gt; void:
+	current_state.physics_update(delta)
+
+
+func _process(delta: float) -&gt; void:
+	current_state.update(delta)
+
+
+func has_state(state_name):
+	for s in states:
+		if 'state_name' in s and s.state_name == state_name:
+			return true
+	return false
+
+
+func get_state(state_name):
+	for s in states:
+		if 'state_name' in s and s.state_name == state_name:
+			return s
+	return null
+
+
+func transition_to(state_name : String,msg : Dictionary = {}):
+	if has_state(state_name):
+		var state = get_state(state_name)
+		if state:
+			current_state = state
+			current_state.enter(msg)
+```
+## 二、 StateBase
+```
+extends Node
+class_name StateBase
+var state_name = 'StateBase'
+func enter(_msg : Dictionary = {}):
+	pass
+	
+func exit():
+	pass
+	
+func update(_delta : float):
+	pass
+
+func physics_update(_delta : float):
+	pass
+```
+## 三、player脚本
+```
+extends CharacterBody2D
+class_name Player
+@export var player : Player
+var current_direction = 'down'
+```
+## 四、角色空闲脚本
+```
+extends StateBase
+@export var player: Player
+@export var animatedsprite2d: AnimatedSprite2D
+@export var statemachine: StateMachine
+func _ready():
+	state_name = 'idle'
+		
+func enter(_msg : Dictionary = {}):
+	pass
+	
+func update(_delta : float):
+	animatedsprite2d.play(player.current_direction + '_idle')
+	if Input.get_vector('left','right','up','down'):
+		statemachine.transition_to('move')
+
+func physics_update(_delta : float):
+	pass
+	
+func exit():
+	animatedsprite2d.stop()
+```
+## 五、角色移动脚本
+```
+extends StateBase
+@export var player: Player
+@export var animatedsprite2d: AnimatedSprite2D
+@export var statemachine: StateMachine
+@export var SPEED = 100
+func _ready():
+	state_name = 'move'
+
+func enter(_msg : Dictionary = {}):
+	pass
+	
+func update(_delta : float):
+	animatedsprite2d.play(player.current_direction + '_move')
+	if !Input.get_vector('left','right','up','down'):
+		statemachine.transition_to('idle')
+
+func physics_update(_delta : float):
+	var input = Input.get_vector('left', 'right', 'up', 'down')
+	if input != Vector2.ZERO:
+		if abs(input.x) &gt; abs(input.y):
+			player.current_direction = 'right' if input.x &gt; 0 else 'left'
+		else:
+			player.current_direction = 'down' if input.y &gt; 0 else 'up'
+		player.velocity = input.normalized() * SPEED
+		player.move_and_slide()
+
+func exit():
+	animatedsprite2d.stop()
+```
+状态机能够很好的对角色的状态进行调整，使制作者能够迅速有效的制作多状态的角色。</description><guid isPermaLink="true">https://ashortwhile.github.io/post/NO.1%20%20Godot-zhuang-tai-ji.html</guid><pubDate>Mon, 25 Aug 2025 11:27:38 +0000</pubDate></item><item><title>第一次写博客</title><link>https://ashortwhile.github.io/post/di-yi-ci-xie-bo-ke.html</link><description>第一次写博客，希望能坚持下去！！！。</description><guid isPermaLink="true">https://ashortwhile.github.io/post/di-yi-ci-xie-bo-ke.html</guid><pubDate>Mon, 25 Aug 2025 10:13:51 +0000</pubDate></item></channel></rss>
