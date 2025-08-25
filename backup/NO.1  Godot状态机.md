@@ -1,3 +1,7 @@
+# Godot状态机
+
+<img width="253" height="114" alt="Image" src="https://github.com/user-attachments/assets/ec8c03af-ab88-400c-9beb-bfe4bba5a1b2" />
+
 ## 一、 StaseMachine
 ```
 extends Node
